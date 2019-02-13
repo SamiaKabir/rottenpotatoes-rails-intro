@@ -1,7 +1,12 @@
 class MoviesController < ApplicationController
-
+    
   def movie_params
     params.require(:movie).permit(:title, :rating, :description, :release_date)
+  end
+  
+  def initialize
+      @all_ratings = Movie.all_ratings
+      super
   end
 
   def show
@@ -11,8 +16,16 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
-    @movies.merge!(Movie.order(params[:sort]))
+#    @movies = Movie.all
+   if (params[:ratings])
+      @ratings = params[:ratings].keys
+   else
+      @ratings = @all_ratings
+   end
+
+   @movies=Movie.where(rating: @ratings)
+   @movies.merge!(Movie.order(params[:sort]))
+
   end
 
   def new
