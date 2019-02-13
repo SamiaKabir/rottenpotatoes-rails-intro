@@ -16,15 +16,31 @@ class MoviesController < ApplicationController
   end
 
   def index
-#    @movies = Movie.all
+
    if (params[:ratings])
+      session[:ratings]=params[:ratings]
       @ratings = params[:ratings].keys
+   elsif (session[:ratings])
+      params[:ratings]=session[:ratings]
+      @ratings = session[:ratings].keys
    else
       @ratings = @all_ratings
    end
+   
+
+   if (params[:sort])
+       session[:sort]=params[:sort]
+       @sort = params[:sort]
+   elsif (session[:sort])
+       params[:sort]=session[:sort]
+       @sort = session[:sort]
+   end
+   
 
    @movies=Movie.where(rating: @ratings)
-   @movies.merge!(Movie.order(params[:sort]))
+   @movies.merge!(Movie.order(@sort))
+   
+
 
   end
 
